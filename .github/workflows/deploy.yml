@@ -1,0 +1,50 @@
+
+name: Databricks Bundle CI/CD
+
+on:
+  push:
+    branches:
+      - feature/dev
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    name: Validate Databricks Bundle
+    runs-on: ubuntu-latest
+
+    env:
+      DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Validate bundle
+        run: databricks bundle validate -t dev
+
+  deploy-dev:
+    name: Deploy to Dev Workspace
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feature/dev'
+    runs-on: ubuntu-latest
+
+    env:
+      DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Deploy bundle to Dev
+        run: databricks bundle deploy -t dev
