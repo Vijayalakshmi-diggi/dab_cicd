@@ -1,7 +1,7 @@
 resources:
   pipelines:
     demo_employee_pipeline:
-      name: demo_employee_pipeline
+      name: demo_employee_pipeline_2
 
       catalog: ${var.catalog}
       schema: ${var.schema}
