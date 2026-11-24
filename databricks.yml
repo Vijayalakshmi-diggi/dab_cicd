@@ -1,0 +1,33 @@
+bundle:
+  name: dab_cicd
+  uuid: 5cbd474e-f4ac-468b-9564-8d782cba876a
+
+include:
+  - resources/*/**.yml
+
+variables:
+  catalog:
+    description: DAB_bundles
+  schema:
+    description: bundle
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-2ae71acf-8793.cloud.databricks.com?w=7474659794472006
+    variables:
+      catalog: workspace
+      schema: ${workspace.current_user.short_name}
+  prod:
+    mode: production
+    workspace:
+      host: https://dbc-2ae71acf-8793.cloud.databricks.com?w=7474659794472006
+      root_path: /Workspace/Users/vijayalakshmi@diggibyte.com/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: workspace
+      schema: prod
+    permissions:
+      - user_name: vijayalakshmi@diggibyte.com
+        level: CAN_MANAGE
